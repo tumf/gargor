@@ -20,11 +20,8 @@ Ruby 1.9以降が必要です
 ## 使い方
 
     $ gargor [dsl-file]
-    
 
-    `dsl-file`を省略した場合は、カレントディレクトリの`gargor.rb`を探します。
-
-    dsl-fileの書き方は、添付の`doc/sample.rb`を御覧ください
+`dsl-file`を省略した場合は、カレントディレクトリの`gargor.rb`を探します。`dsl-file`の書き方は、添付の`doc/sample.rb`を御覧ください
     
 
 ### 注意
