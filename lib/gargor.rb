@@ -111,7 +111,9 @@ class Gargor
         end
 
         #同じのは追加しない
-        @@individuals << i unless @@individuals.find { |ii| ii.params == i.params }
+        if i and !@@individuals.find { |ii| ii.params == i.params }
+          @@individuals << i 
+        end
       }
       puts "poulate: #{@@individuals}"
       @@individuals
