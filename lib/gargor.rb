@@ -101,7 +101,7 @@ class Gargor
       @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite) if @@elite > 0
       loop{
         break if @@individuals.length >= @@population
-        if rand <= @@mutation or prev_count <= 2
+        if rand <= @@mutation
           i =  mutation
         else
           a = selection @@prev_generation
