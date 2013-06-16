@@ -56,8 +56,8 @@ class Gargor
       return a.clone if a.params == b.params
 
       total = a.fitness + b.fitness
-      c = a.clone
-      c.fitness = nil
+      c = Individual.new
+      c.params = a.params.clone
 
       c.params.each { |name,param|
         cur = float_rand(total)
