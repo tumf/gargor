@@ -98,7 +98,7 @@ class Gargor
       end
 
       puts "population: #{@@prev_generation.length}"
-      @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite)
+      @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite) if @@elite > 0
       loop{
         break if @@individuals.length >= @@population
         if rand <= @@mutation or prev_count <= 2
