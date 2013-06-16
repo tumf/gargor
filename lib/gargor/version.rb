@@ -1,3 +1,3 @@
-module Gargor
+class Gargor
   VERSION = "0.0.1"
 end
