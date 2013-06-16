@@ -2,8 +2,10 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'gargor'
 
+dsl_file=ARGV.last||"gargor.rb"
+
 Gargor.start
-Gargor.load_dsl(ARGV.last)
+Gargor.load_dsl(dsl_file)
 loop {
   Gargor.populate.each { |i|
     if i.fitness == nil
