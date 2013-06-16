@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Gargor::VERSION
   spec.authors       = ["Yoshihiro TAKAHARA"]
   spec.email         = ["y.takahara@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{auto server tunner by generic algorithm}
+  spec.summary       = %q{auto server tunner by generic algorithm using chef}
+  spec.homepage      = "https://github.com/tumf/gargor"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
