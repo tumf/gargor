@@ -44,6 +44,7 @@ class Gargor
       individual
     end
 
+    # 浮動小数点対応のrand
     def float_rand(f,p = @@fitness_precision)
       f *= @@fitness_precision
       i = f.to_i
@@ -62,8 +63,7 @@ class Gargor
         cur = float_rand(total)
         c.params[name] = b.params[name] if b.fitness > cur
       }
-      
-      puts "#{a.to_s} + #{b.to_s} => #{c.to_s}"
+      puts "#{a.to_s} + #{b.to_s} \n    => #{c.to_s}"
       c
     end
 
@@ -90,8 +90,12 @@ class Gargor
         return @@individuals
       end
 
-      # fitness > 0 適応している個体数
+      # fitness > 0 適応している個体
       prev_count = @@prev_generation.select { |i| i.fitness > 0 }.count
+
+      if prev_count < 2
+        raise "***** EXTERMINATION ******"
+      end
 
       puts "population: #{@@prev_generation.length}"
       @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite)
