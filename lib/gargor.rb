@@ -54,7 +54,7 @@ class Gargor
 
     def crossover a,b
       return a.clone if a.params == b.params
-
+      puts "crossover: #{a} #{b}"
       total = a.fitness + b.fitness
       c = Individual.new
       c.params = a.params.clone
@@ -103,6 +103,7 @@ class Gargor
         break if @@individuals.length >= @@population
         if rand <= @@mutation
           i =  mutation
+          puts "mutation #{i}"
         else
           a = selection @@prev_generation
           b = selection @@prev_generation
@@ -112,7 +113,7 @@ class Gargor
         #同じのは追加しない
         @@individuals << i unless @@individuals.find { |ii| ii.params == i.params }
       }
-
+      puts "poulate: #{@@individuals}"
       @@individuals
     end
 
