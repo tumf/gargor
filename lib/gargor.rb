@@ -28,6 +28,7 @@ class Gargor
       @@attack_cmd = "false"
       @@attack_proc = nil
       @@evaluate_proc = nil
+      @@target_nodes = []
     end
 
     def load_dsl(params_file)
