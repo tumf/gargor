@@ -21,7 +21,7 @@ class Gargor
       @@prev_generation = nil
       @@individuals = []
       @@param_procs = {}
-      @@population = 10
+      @@population = 0
       @@max_generations = 1
       @@generation = 1
       @@elite = 0
@@ -34,6 +34,7 @@ class Gargor
     def load_dsl(params_file)
       contents = File.open(params_file, 'rb'){ |f| f.read }
       new.instance_eval(contents)
+      raise "POPULATION == 0" if @@population == 0
     end
 
     def mutation
