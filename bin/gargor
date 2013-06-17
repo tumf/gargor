@@ -8,8 +8,8 @@ def usage
   STDERR.print "usage: #{$0} [dsl-file]\n"
 end
 
-Gargor.start
 begin
+  Gargor.start
   Gargor.load_dsl(dsl_file)
 rescue
   usage
