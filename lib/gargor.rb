@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'rubygems' if RUBY_VERSION < '1.9'
 require "gargor/version"
 require "gargor/individual"
 require "gargor/parameter"
