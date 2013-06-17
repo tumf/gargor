@@ -13,6 +13,7 @@ begin
   Gargor.load_dsl(dsl_file)
 rescue
   usage
+  exit 1
 end
 
 loop {
