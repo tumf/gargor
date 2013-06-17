@@ -4,8 +4,17 @@ require 'gargor'
 
 dsl_file=ARGV.last||"gargor.rb"
 
+def usage
+  STDERR.print "usage: #{$0} [dsl-file]\n"
+end
+
 Gargor.start
-Gargor.load_dsl(dsl_file)
+begin
+  Gargor.load_dsl(dsl_file)
+rescue
+  usage
+end
+
 loop {
   Gargor.populate.each { |i|
     if i.fitness == nil
