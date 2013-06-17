@@ -27,7 +27,7 @@ class Gargor
       @@elite = 0
       @@attack_cmd = "false"
       @@attack_proc = nil
-      @@evaluate_proc = nil
+      @@evaluate_proc = Proc.new { 0 }
       @@target_nodes = []
     end
 
