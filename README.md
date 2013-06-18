@@ -1,84 +1,81 @@
 # gargor
 
-`gargor`はChefで管理されたサーバのパラメータと負荷試験結果を遺伝的アルゴリズム(genetic algorithm)によ探索し、最適値を探索します。本ソフトウェアをうまく使うことで今まで勘と経験に頼っていたサーバチューニングをより最適にかつ自動化することができます。
+`gargor` is software which uses genetic algorithm to support parameter tuning of the servers controlled by Chef.Using this software, you are able to optimize and automate the server tuning, which you did until now based on a combination of my experience and intuition. 　
 
-## インストール
+## Install
 
-Ruby 1.9以降が必要です
+Ruby 1.9-
 
-    $ gem install gargor
+    $ [sudo] gem install gargor
     
-## どのように動くのか
+## How it works
 
-1. 現在のChefの設定ファイル(JSON)から個体を一つ作ります。
-2. 残りの個体を突然変異により作ります。
-3. 各個体に対し負荷試験(Chefによる配備→攻撃)を実施し、適応値を算出します。
-4. 現世代の個体群に対して、エリートと残りを交叉および突然変異により次世代の個体群をつくります。
-5. 次世代の個体群を現世代として`3.`に戻ります。これを指定した世代分実施します。
-6. 最後に最も高い適応値の個体をサーバに配備して終了します
+1. Create a individual from current Chef settings (JSON file).
+2. Create remaining individuals by mutation.
+3. By performing stress-test (deloy by Chef and Attack by some stress tool) for each individuals to evaluate fitness.
+4. To create Individuals of Next-generation, Individuals of current generation are crossovered or mutated each other.
+5. Treat individuals of Next-generation as current generation. return to 3. Repeat until the max generations number of times.
+6. It ends with a deployment to the server with a individual which has the highest fitness.
 
-## 使い方
+## Usage
 
     $ gargor [dsl-file]
 
-`gargor`の設定情報は、内部DSLによりに以下のように記述します。
+The dsl-file of `gargor` should be written as belows:
 
 ```ruby
-# 世代数: 1以上を指定してください
+# generations: set > 1
 max_generations 10
 
-# 個体数: 1世代あたりの個体数
+# individuals number of some generation.
 population 10
 
-# エリート: 世代交代の時に適応値の高い個体をそのまま次世代に引き継ぐ数
+# elite number of some generation.(carried over)
 elite 1
 
-# 突然変異の確率: "0.01"で"1%"
+# Probability of mutation　set "0.01" to "1%" (when crossover)
 mutation 0.01
 
-# ターゲットをChefで料理するコマンド %sには、ノード名が入る
+# target cook command : '%s' will replace by node name.
 target_cooking_cmd "knife solo cook %s"
 
-# ターゲットのノード
-#   攻撃前に以下のノードすべてに対してtarget_cooking_cmdが実施される
+# target nodes
+#   performing target_cooking_command before the attack.
 target_nodes ["www-1.example","www-2.example","db-1.example"]
 
-# 攻撃コマンド
+# attack command
 attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 
 
-# 攻撃結果の評価
-# code: attack_cmdのプロセス終了コード(普通は0:成功)
-# out:  attack_cmdの標準出力
-# time: attack_cmdの実行時間
+# evalute of the attack
+# code: exit code of attack_cmd command (0 => succees)
+# out:  standard output of attack_cmd command
+# time: execute time of attack_cmd
 evaluate do |code,out,time|
   puts out
   fitness = 0
-
-  # 攻撃コマンドで使っている、グリーン破壊の標準出力から
-  # FAILEDの値を抜き出し0以外は適応値0としている
+  # get "FAILED" count from stadard output of stress-tool,
+  # and set fitess to 0 when FAILED > 0.
   if time > 0 && code == 0 && /^FAILED (\d+)/ =~ out && $1 == "0"
-    # 攻撃コマンドで使っている、グリーン破壊の標準出力から
-    # 適応値に代用できそうなものを正規表現で取得する
-    # request count:200, concurrenry:20, 45.060816 req/s
+    # get fitness from stadard output of stress-tool.
+    # e.g.: request count:200, concurrenry:20, 45.060816 req/s
     if /, ([\.\d]+) req\/s/ =~ out
       fitness = $1.to_f
     end
-    # 単純に実行時間で適応値を設定したいなら以下のようにしても良い
+    # To get fitness simply,to use execution time
     # fitness = 1/time
   end
-  # このブロックは必ず適応値を返すこと(整数or浮動小数)
+  # This block must return the fitness.(integer or float)
   fitness
 end
 
-# パラメータ定義
-# GAにより変動されるパラメータをここで定義する
-# 
-# param 名前 do
-# json_file: 値を上書くJSONファイル nodes/*.jsonやroles/*.json
-#            (注意!) gargorはこのjsonファイルを容赦なく書き換える
-# json_path: json_fileの中から書変える値の場所をJSONPath形式で指定する
-# mutaion:   突然変異時の値の設定
+# definition of parameters(GA)
+#
+# param _name_ do
+# json_file: Chef parameter(JSON) file (such as  nodes/*.json or roles/*.json)
+#            (Warning!) gargor will overwrite their json files.
+# json_path: to locate the value by JSONPath
+# mutaion:   to set value when mutaion
 param "max_clients" do
   json_file "roles/www.json"
   json_path '$.httpd.max_clients'
@@ -110,21 +107,16 @@ param "query_cache_size" do
 end
 ```
 
-このDSLファイルは任意のファイル名でChefのリポジトリに含めてしまうことを推奨します。`dsl-file`を省略した場合は、カレントディレクトリの`gargor.rb`を探します。
+### Warning
 
-### 注意
+The `gargor` will overwrite Chef JSON files.So you should take care of original files.
 
-`gargor`は、DSLファイルで指定されたChefのJSONを直接（問答無用で）書き換えます。`git stash`を使うなりしてオリジナルが消えないように配慮ください。
-
-## サンプルレシピ
-
-`Chef`のサンプルレシピをTipsを交えてご紹介します。
+## Sample Chef recipe
 
 ### mysql
 
 
 ```ruby
-# この時点で起動しようとすると以前の設定ファイルがおかしい場合にエラーが出てしまう
 service "mysqld" do
   action :nothing
 end
@@ -134,7 +126,6 @@ template "/etc/my.cnf" do
   notifies :restart,"service[mysqld]"
 end
 
-# ib_logfile0,1はib_logfile1はinnodb_log_file_sizeを変えるとエラーになるので毎回消す
 file "/var/lib/mysql/ib_logfile0" do
   action :delete
   notifies :restart,"service[mysqld]"
@@ -145,7 +136,7 @@ file "/var/lib/mysql/ib_logfile1" do
 end
 ```
 
-このテンプレートは以下のようになっています。`innodb_buffer_pool_size`を探索対象のパラメータにしたいのですが、「`innodb_log_file_size`を`innodb_buffer_pool_size`の25%にすべし」と注意書きがあるので、`innodb_log_file_size`を設定対象にして、`innodb_buffer_pool_size`をその4倍にしています。
+my.conf.erb
 
 ```
 [mysqld]
@@ -205,7 +196,7 @@ pid-file=/var/run/mysqld/mysqld.pid
 
 ### httpd
 
-Apacheのパフォーマンスチューニングでは以下の様にしています。レシピには全く工夫はありません。
+When I tune Apache httpd servers ,The Chef recipe is as below:
 
 ```
 service "httpd" do
@@ -218,7 +209,7 @@ template "/etc/httpd/conf/httpd.conf" do
 end
 ```
 
-ポイントは`MinSpareServers`と`MaxSpareServers`のように上下関係のあるパラメータの決定方法を以下のように`min_spare_servers`と`range_spare_servers`としている点です。また、`ServerLimit`=`MaxClients`としています。
+httpd.conf.erb
 
 ```
 <IfModule prefork.c>
@@ -231,21 +222,11 @@ MaxRequestsPerChild  <%= node["httpd"]["max_request_per_child"] %>
 </IfModule>
 ```
 
-## 負荷試験ツール
+## Stress Tools
 
-コマンドラインで使えるものであれば、大体使うことができます。サンプルでは、[グリーン破壊](https://github.com/KLab/green-hakai/)を使わせて頂きました。
+I use [green hakai](https://github.com/KLab/green-hakai/).
 
-負荷試験の厳しさによって個体が全滅することがあります。すると以下のように表示され、プログラムが終了します。
-
-    ***** EXTERMINATION ******
-    
-これは、個体の環境が厳しすぎるためで負荷の条件を緩めて再度実施してください。    
-
-## FAQ
-
-#####  `gargor`はなんて読むの?
-
-「がるごる」
+You can use ab(Apache bench) and so on.
 
 ## Contributing
 
@@ -254,3 +235,5 @@ MaxRequestsPerChild  <%= node["httpd"]["max_request_per_child"] %>
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
