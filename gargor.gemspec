@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Gargor::VERSION
   spec.authors       = ["Yoshihiro TAKAHARA"]
   spec.email         = ["y.takahara@gmail.com"]
-  spec.description   = %q{It is software which uses generic algorithm to support parameter tuning of the servers controlled by Chef.}
-  spec.summary       = %q{An auto-tuning tool for internet servers w/ Genetic Algorithm and Chef. You can get good settings during sleeping ;) }
+  spec.description   = %q{An auto-tuning tool for internet servers w/ Genetic Algorithm and Chef. You can get good settings during sleeping ;) }
+  spec.summary       = %q{It is software which uses generic algorithm to support parameter tuning of the servers controlled by Chef.}
   spec.homepage      = "https://github.com/tumf/gargor"
   spec.license       = "MIT"
 
