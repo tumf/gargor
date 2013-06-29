@@ -48,6 +48,7 @@ class Gargor
       @@target_nodes = []
       true
     end
+    Gargor.start
 
     def validate
       raise "POPULATION == 0" if @@population == 0
@@ -72,6 +73,7 @@ class Gargor
 
     # 浮動小数点対応のrand
     def float_rand(f,p = @@fitness_precision)
+      raise "max must be > 0" unless f > 0
       f *= @@fitness_precision
       i = f.to_i
       f = rand(i)
