@@ -40,7 +40,7 @@ class Gargor
     end
 
     def load_dsl(params_file)
-      contents = File.open(params_file, 'rb'){ |f| f.read }
+      contents = File.open(params_file, 'rb').read
       new.instance_eval(contents)
       raise "POPULATION == 0" if @@population == 0
     end
