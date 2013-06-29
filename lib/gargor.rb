@@ -9,7 +9,7 @@ require "gargor/parameter"
 class Gargor
   GLOBAL_OPTS = ["population","max_generations","target_nodes",
                  "attack_cmd","elite","mutation","target_cooking_cmd",
-                 "attack_node","fitness_precision","attack_result"]
+                 "fitness_precision"]
 
   GLOBAL_OPTS.each { |name| 
     define_method(name) { |val|
