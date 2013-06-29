@@ -1,4 +1,4 @@
-# gargor
+# gargor [![Build Status](https://travis-ci.org/tumf/gargor.png?branch=master)](https://travis-ci.org/tumf/gargor)
 
 `gargor` is software which uses genetic algorithm to support parameter tuning of the servers controlled by Chef.Using this software, you are able to optimize and automate the server tuning, which you did until now based on a combination of my experience and intuition. 　
 
