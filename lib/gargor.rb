@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'rubygems' if RUBY_VERSION < '1.9'
+require "logger"
+
 require "gargor/version"
 require "gargor/individual"
 require "gargor/parameter"
@@ -16,6 +18,12 @@ class Gargor
   }
 
   class << self
+    def log message,level = :debug
+      unless $TESTING
+        @@logger ||= Logger.new(STDOUT)
+        @@logger.send(level,message)
+      end
+    end
     def start
       @@fitness_precision = 100000000
       @@prev_generation = nil
@@ -57,7 +65,7 @@ class Gargor
 
     def crossover a,b
       return a.clone if a.params == b.params
-      puts "crossover: #{a} #{b}"
+      log "crossover: #{a} #{b}"
       total = a.fitness + b.fitness
       c = Individual.new
       c.params = a.params.clone
@@ -66,7 +74,7 @@ class Gargor
         cur = float_rand(total)
         c.params[name] = b.params[name] if b.fitness > cur
       }
-      puts "#{a.to_s} + #{b.to_s} \n    => #{c.to_s}"
+      log "#{a.to_s} + #{b.to_s} \n    => #{c.to_s}"
       c
     end
 
@@ -100,13 +108,13 @@ class Gargor
         raise "***** EXTERMINATION ******"
       end
 
-      puts "population: #{@@prev_generation.length}"
+      log "population: #{@@prev_generation.length}"
       @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite) if @@elite > 0
       loop{
         break if @@individuals.length >= @@population
         if rand <= @@mutation
           i =  mutation
-          puts "mutation #{i}"
+          log "mutation #{i}"
         else
           a = selection @@prev_generation
           b = selection @@prev_generation
@@ -118,17 +126,17 @@ class Gargor
           @@individuals << i 
         end
       }
-      puts "poulate: #{@@individuals}"
+      log "poulate: #{@@individuals}"
       @@individuals
     end
 
 
     def next_generation
-      puts "<== end generation #{@@generation}"
+      log "<== end generation #{@@generation}"
       @@generation += 1
       return false if @@generation > @@max_generations
 
-      puts "==> next generation #{@@generation}"
+      log "==> next generation #{@@generation}"
       @@prev_generation = @@individuals
       true
     end
