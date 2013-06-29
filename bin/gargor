@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 $:.unshift(File.dirname(__FILE__) + '/../lib')
+$TESTING=false
 require 'gargor'
 
 dsl_file=ARGV.last||"gargor.rb"
@@ -20,9 +21,7 @@ loop {
   Gargor.populate.each { |i|
     if i.fitness == nil
       i.set_params
-      if i.deploy
-        i.attack
-      end
+      i.attack if i.deploy
     end
   }
   break unless Gargor.next_generation
