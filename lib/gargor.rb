@@ -24,6 +24,15 @@ class Gargor
         @@logger.send(level,message)
       end
     end
+
+    def params
+      result = {}
+      GLOBAL_OPTS.map { |name| 
+        result[name] = Gargor.class_variable_get("@@#{name}")
+      }
+      result
+    end
+
     def start
       @@fitness_precision = 100000000
       @@prev_generation = nil
@@ -37,12 +46,18 @@ class Gargor
       @@attack_proc = nil
       @@evaluate_proc = Proc.new { 0 }
       @@target_nodes = []
+      true
+    end
+
+    def validate
+      raise "POPULATION == 0" if @@population == 0
+      true
     end
 
     def load_dsl(params_file)
       contents = File.open(params_file, 'rb').read
       new.instance_eval(contents)
-      raise "POPULATION == 0" if @@population == 0
+      validate
     end
 
     def mutation
@@ -102,7 +117,8 @@ class Gargor
       end
 
       # fitness > 0 適応している個体
-      prev_count = @@prev_generation.select { |i| i.fitness > 0 }.count
+      prev_count = @@prev_generation.select { |i| 
+        i.fitness && i.fitness > 0 }.count
 
       if prev_count < 2
         raise "***** EXTERMINATION ******"
