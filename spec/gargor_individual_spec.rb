@@ -39,7 +39,7 @@ EOF
       [out,"0"]
     }
     i.attack
-    expect(i.fitness).to be 3300.0
+    expect(i.fitness).to eq 3300.0
 
   end
 end
