@@ -62,3 +62,44 @@ describe Gargor,".poplutate" do
     }.to raise_error RuntimeError
   end
 end
+
+describe Gargor,".float_rand" do
+  it "returns 0...max" do
+    Gargor.stub(:rand) { |max| max/2.0 }
+    expect(Gargor.float_rand(0.1,100)).to be 0.05
+  end
+
+  it "raise RuntimeError unless max > 0" do
+    expect {
+      Gargor.float_rand(0)}.to raise_error RuntimeError
+    expect {
+      Gargor.float_rand(-1.2)}.to raise_error RuntimeError
+  end
+end
+
+describe Gargor,".crossover" do
+  it "crossoveres two Gargor::Individual objects" do
+    to_load_fixture "sample-1.rb"
+    Gargor.start
+    Gargor.load_dsl("dummy")
+    a = Gargor.mutation; a.fitness = 0.4
+    b = Gargor.mutation; b.fitness = 0.6
+
+    expect(Gargor.crossover(a,b)).to be_kind_of Gargor::Individual
+  end
+end
+
+describe Gargor,".selection" do
+  it "does something" do
+    to_load_fixture "sample-1.rb"
+    Gargor.start
+    Gargor.load_dsl("dummy")
+    a = Gargor.mutation; a.fitness = 0.4
+    b = Gargor.mutation; b.fitness = 0.6
+    g = [a,b]
+    expect(Gargor.selection g).to be_kind_of Gargor::Individual
+  end
+end
+
+
+

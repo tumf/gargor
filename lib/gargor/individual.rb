@@ -57,6 +57,11 @@ class Gargor
       ret
     end
 
+    def shell command
+      out = `command`
+      ret = $?
+      [out,ret]
+    end
 
     def attack
       ret = nil;out = nil
@@ -64,8 +69,7 @@ class Gargor
       log "==> attack"
       log "execute: #{cmd}"
       tms = Benchmark.realtime do
-        out = `#{cmd}`
-        ret = $?
+        out,ret = shell(cmd)
       end
 
       @fitness = Gargor.opt('evaluate_proc').call(ret.to_i,out,tms)

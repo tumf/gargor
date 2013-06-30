@@ -1,4 +1,4 @@
-# -*- coding: ascii-8bit -*-
+# -*- coding: utf-8 -*-
 # generations: set > 1
 max_generations 10
 
@@ -27,7 +27,8 @@ attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 # out:  standard output of attack_cmd command
 # time: execute time of attack_cmd
 evaluate do |code,out,time|
-  puts out
+  p time
+  p code
   fitness = 0
   # get "FAILED" count from stadard output of stress-tool,
   # and set fitess to 0 when FAILED > 0.
