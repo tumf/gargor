@@ -66,7 +66,7 @@ end
 describe Gargor,".float_rand" do
   it "returns 0...max" do
     Gargor.stub(:rand) { |max| max/2.0 }
-    expect(Gargor.float_rand(0.1,100)).to be 0.05
+    expect(Gargor.float_rand(0.1,100)).to eq 0.05
   end
 
   it "raise RuntimeError unless max > 0" do
