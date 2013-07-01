@@ -133,7 +133,7 @@ class Gargor
 
     def select_elites g,count
       return [] unless count > 0
-      g.sort{ |a,b| a.fitness<=>b.fitness }.last(count) 
+      Gargor::Individuals.new(g.sort{ |a,b| a.fitness<=>b.fitness }.last(count))
     end
 
     def mutation? mutation=@@mutation
