@@ -17,7 +17,7 @@ describe Gargor::Individual, "#deploy" do
     Gargor.load_dsl("dummy")
 
     i = Gargor.mutate
-    i.stub(:system) { |cmd|
+    i.stub(:shell) { |cmd|
       expect(cmd).to match /knife solo cook (www-1|www-2|db-1).example/
     }
     i.deploy
