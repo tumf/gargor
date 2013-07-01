@@ -50,7 +50,7 @@ class Gargor
         log "==> deploy to #{node}"
         cmd = Gargor.opt("target_cooking_cmd") % [node]
         log "    #{cmd}"
-        r = system(cmd)
+        out,r = shell(cmd)
         unless r
           log "deploy failed"
           @fitness = 0
