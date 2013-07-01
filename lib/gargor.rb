@@ -72,9 +72,9 @@ class Gargor
     end
 
     # 前世代の数
-    def prev_count
+    def prev_count g = @@prev_generation
       # fitness > 0 適応している個体
-      @@prev_generation.select { |i| i.fitness && i.fitness > 0 }.count
+      g.select { |i| i.fitness && i.fitness > 0 }.count
     end
 
     def load_dsl(params_file)
@@ -136,8 +136,8 @@ class Gargor
       g.sort{ |a,b| a.fitness<=>b.fitness }.last(count) 
     end
 
-    def mutation?
-      rand <= @@mutation
+    def mutation? mutation=@@mutation
+      rand <= mutation
     end
 
     def select_parents g
