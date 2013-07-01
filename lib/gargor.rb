@@ -9,6 +9,9 @@ require "gargor/parameter"
 class Gargor
   class GargorError < RuntimeError; end
   class ExterminationError < GargorError; end
+  class ParameterError < GargorError; end
+  class ValidationError < GargorError; end
+  class ArgumentError < GargorError; end
 
   class Individuals < Array
     def has? i
@@ -60,7 +63,7 @@ class Gargor
     Gargor.start
 
     def validate
-      raise "POPULATION == 0" if @@population == 0
+      raise ValidationError,"POPULATION isn't > 0" unless @@population > 0
       true
     end
 
@@ -92,7 +95,7 @@ class Gargor
 
     # 浮動小数点対応のrand
     def float_rand(f,p = @@fitness_precision)
-      raise "max must be > 0" unless f > 0
+      raise ArgumentError,"max must be > 0" unless f > 0
       f *= @@fitness_precision
       i = f.to_i
       f = rand(i)
@@ -115,7 +118,7 @@ class Gargor
         return i if i.fitness > cur
         cur -= i.fitness
       }
-      raise "error selection"
+      raise GargorError,"error selection"
     end
 
     def populate_first_generation
@@ -166,7 +169,7 @@ class Gargor
                         populate_first_generation
                       else
                         # 次世代
-                        raise ExterminationError if prev_count < 2
+                        raise ExterminationError unless prev_count >= 2
                         populate_next_generation @@prev_generation,@@population,@@elite
                       end
     end
