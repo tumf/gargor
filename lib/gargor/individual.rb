@@ -40,7 +40,7 @@ class Gargor
       log @params
       @params.each { |name,param|
         set_param(param)
-        log "    write #{param.file}"
+        log "#{name}    write #{param.file}"
       }
     end
 
