@@ -16,7 +16,7 @@ describe Gargor::Individual, "#deploy" do
     Gargor.start
     Gargor.load_dsl("dummy")
 
-    i = Gargor.mutation
+    i = Gargor.mutate
     i.stub(:system) { |cmd|
       expect(cmd).to match /knife solo cook (www-1|www-2|db-1).example/
     }
@@ -29,7 +29,7 @@ describe Gargor::Individual, "attack" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    i = Gargor.mutation
+    i = Gargor.mutate
     i.stub(:shell) { |cmd|
       expect(cmd).to eq Gargor.opt("attack_cmd")
       out=<<EOF

@@ -42,7 +42,7 @@ describe Gargor,".mutation" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    expect(Gargor.mutation).to be_kind_of Gargor::Individual
+    expect(Gargor.mutate).to be_kind_of Gargor::Individual
   end
 end
 
@@ -82,8 +82,8 @@ describe Gargor,".crossover" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    a = Gargor.mutation; a.fitness = 0.4
-    b = Gargor.mutation; b.fitness = 0.6
+    a = Gargor.mutate; a.fitness = 0.4
+    b = Gargor.mutate; b.fitness = 0.6
 
     expect(Gargor.crossover(a,b)).to be_kind_of Gargor::Individual
   end
@@ -94,8 +94,8 @@ describe Gargor,".selection" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    a = Gargor.mutation; a.fitness = 0.4
-    b = Gargor.mutation; b.fitness = 0.6
+    a = Gargor.mutate; a.fitness = 0.4
+    b = Gargor.mutate; b.fitness = 0.6
     g = [a,b]
     expect(Gargor.selection g).to be_kind_of Gargor::Individual
   end

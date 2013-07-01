@@ -7,6 +7,15 @@ require "gargor/individual"
 require "gargor/parameter"
 
 class Gargor
+  class GargorError < RuntimeError; end
+  class ExterminationError < GargorError; end
+
+  class Individuals < Array
+    def has? i
+      !!self.find { |ii| ii.params == i.params }
+    end
+  end
+
   GLOBAL_OPTS = ["population","max_generations","target_nodes",
                  "attack_cmd","elite","mutation","target_cooking_cmd",
                  "fitness_precision"]
@@ -55,13 +64,23 @@ class Gargor
       true
     end
 
+    def first_generation?
+      !@@prev_generation 
+    end
+
+    # 前世代の数
+    def prev_count
+      # fitness > 0 適応している個体
+      @@prev_generation.select { |i| i.fitness && i.fitness > 0 }.count
+    end
+
     def load_dsl(params_file)
       contents = File.open(params_file, 'rb').read
       new.instance_eval(contents)
       validate
     end
 
-    def mutation
+    def mutate
       individual = Individual.new
       @@param_procs.each { |name,proc|
         param =  Parameter.new(name)
@@ -86,13 +105,7 @@ class Gargor
       total = a.fitness + b.fitness
       c = Individual.new
       c.params = a.params.clone
-
-      c.params.each { |name,param|
-        cur = float_rand(total)
-        c.params[name] = b.params[name] if b.fitness > cur
-      }
-      log "#{a.to_s} + #{b.to_s} \n    => #{c.to_s}"
-      c
+      c.overwrite_by(b,b.fitness,total)
     end
 
     def selection g
@@ -105,47 +118,57 @@ class Gargor
       raise "error selection"
     end
 
-    def populate
-      @@individuals = []
-      
-      # 第一世代
-      unless @@prev_generation
-        @@individuals << mutation.load_now
-        loop{
-          break if @@individuals.length >= @@population
-          @@individuals << mutation
-        }
-        return @@individuals
-      end
-
-      # fitness > 0 適応している個体
-      prev_count = @@prev_generation.select { |i| 
-        i.fitness && i.fitness > 0 }.count
-
-      if prev_count < 2
-        raise "***** EXTERMINATION ******"
-      end
-
-      log "population: #{@@prev_generation.length}"
-      @@individuals = @@prev_generation.sort{ |a,b| a.fitness<=>b.fitness }.last(@@elite) if @@elite > 0
+    def populate_first_generation
+      individuals = Gargor::Individuals.new
+      individuals << mutate.load_now
       loop{
-        break if @@individuals.length >= @@population
-        if rand <= @@mutation
-          i =  mutation
-          log "mutation #{i}"
-        else
-          a = selection @@prev_generation
-          b = selection @@prev_generation
-          i = crossover(a,b)
-        end
-
-        #同じのは追加しない
-        if i and !@@individuals.find { |ii| ii.params == i.params }
-          @@individuals << i 
-        end
+        break if individuals.length >= @@population
+        individuals << mutate
       }
-      log "poulate: #{@@individuals}"
-      @@individuals
+      individuals
+    end
+
+    def select_elites g,count
+      return [] unless count > 0
+      g.sort{ |a,b| a.fitness<=>b.fitness }.last(count) 
+    end
+
+    def mutation?
+      rand <= @@mutation
+    end
+
+    def select_parents g
+      [selection(g),selection(g)]
+    end
+
+    def populate_next_generation
+      log "population: #{prev_generation.length}"
+      individuals = Gargor::Individuals.new
+      individuals += select_elites @@prev_generation,@@elite
+
+      loop{
+        break if individuals.length >= @@population
+        i = if mutation?
+              log "mutate #{i}"
+              mutate
+            else
+              crossover(*select_parents(@@prev_generation))
+            end
+        individuals << i unless individuals.has?(i)
+      }
+      log "poulate: #{individuals}"
+      individuals
+    end
+
+    def populate
+      @@individuals = if first_generation?
+                        # 第一世代
+                        populate_first_generation
+                      else
+                        # 次世代
+                        raise ExterminationError if prev_count < 2
+                        populate_next_generation @@prev_generation,@@population,@@elite
+                      end
     end
 
 

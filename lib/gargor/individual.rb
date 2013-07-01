@@ -76,5 +76,14 @@ class Gargor
       log "fitness: #{@fitness}"
       @fitness
     end
+
+    # a/b の確率でiを上書きする
+    def overwrite_by i,a,b
+      @params.each { |name,param|
+        @params[name] = i.params[name] if a > Gargor.float_rand(b)
+      }
+      self
+    end
+
   end
 end
