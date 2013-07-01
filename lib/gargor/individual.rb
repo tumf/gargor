@@ -28,14 +28,18 @@ class Gargor
       self
     end
 
+    def set_param param
+      File.open(param.file,"rw") { |f|
+        json = JSON.pretty_generate(JsonPath.for(f.read).gsub(param.path) { |v| param.value }.to_hash)
+        f.write(json)
+      }
+    end
+
     def set_params
       log "==> set params"
       log @params
       @params.each { |name,param|
-        json = File.open(param.file).read
-        json = JSON.pretty_generate(JsonPath.for(json).gsub(param.path) { |v| param.value }.to_hash)
-        # 書き出し
-        File.open(param.file,"w") { |f| f.write(json) }
+        set_param(param)
         log "    write #{param.file}"
       }
     end
