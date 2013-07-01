@@ -68,7 +68,7 @@ class Gargor
     end
 
     def first_generation?
-      !@@prev_generation 
+      @@generation == 1
     end
 
     # 前世代の数
