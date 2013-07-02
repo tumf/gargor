@@ -30,11 +30,12 @@ class Gargor
   }
 
   class << self
-    def log message,level = :debug
-      unless $TESTING
-        @@logger ||= Logger.new(STDOUT)
-        @@logger.send(level,message)
-      end
+    def log message,level = :info
+      @@logger.send(level,message)
+    end
+
+    def debug message
+      log message,:debug
     end
 
     def params
