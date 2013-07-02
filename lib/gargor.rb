@@ -31,7 +31,8 @@ class Gargor
 
   class << self
     def log message,level = :info
-      @@logger.send(level,message) unless $TESTING
+      return if $TESTING
+      message.split("\n").each { |line| @@logger.send(level,line) }
     end
 
     def debug message
