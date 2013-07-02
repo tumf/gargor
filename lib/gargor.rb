@@ -128,7 +128,8 @@ class Gargor
         break if individuals.length >= @@population
         individuals << mutate
       }
-      individuals
+      
+      Gargor::Individuals.new(individuals.shuffle)
     end
 
     def select_elites g,count
@@ -159,7 +160,7 @@ class Gargor
         individuals << i unless individuals.has?(i)
       }
       log "poulate: #{individuals}"
-      individuals
+      Gargor::Individuals.new(individuals.shuffle)
     end
 
     def populate
