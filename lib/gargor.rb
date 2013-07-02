@@ -95,6 +95,7 @@ class Gargor
         param.instance_eval(&proc)
         individual.params[name] = param
       }
+      log "mutate #{individual}"
       individual
     end
 
@@ -157,7 +158,6 @@ class Gargor
       loop{
         break if individuals.length >= @@population
         i = if mutation?
-              log "mutate #{i}"
               mutate
             else
               crossover(*select_parents(@@prev_generation))
