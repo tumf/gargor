@@ -13,6 +13,8 @@ SimpleCov.start
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 require 'gargor'
 require 'rspec'
+RSpec.configure do |config|
+end
 
 def load_fixture name
   file = File.join(File.dirname(__FILE__), "fixtures",name)
