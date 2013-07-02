@@ -45,26 +45,25 @@ class Gargor
     end
 
     def deploy
-      ret = true
       Gargor.opt("target_nodes").each { |node|
         log "==> deploy to #{node}"
         cmd = Gargor.opt("target_cooking_cmd") % [node]
         log "    #{cmd}"
         out,r = shell(cmd)
-        unless r
+        unless r == 0
           log "deploy failed"
           @fitness = 0
           sleep 1
+          return false
         end
-        ret &= r
       }
-      ret
+      true
     end
 
     def shell command
       out = `command`
       ret = $?
-      [out,ret]
+      [out,ret.exitstatus]
     end
 
     def attack
@@ -76,7 +75,7 @@ class Gargor
         out,ret = shell(cmd)
       end
 
-      @fitness = Gargor.opt('evaluate_proc').call(ret.to_i,out,tms)
+      @fitness = Gargor.opt('evaluate_proc').call(ret,out,tms)
       log "fitness: #{@fitness}"
       @fitness
     end
