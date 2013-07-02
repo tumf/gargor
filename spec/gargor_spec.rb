@@ -9,7 +9,7 @@ end
 
 describe Gargor,".load_dsl" do
   it "must raise RuntimeError when load from file with population 0" do
-    File.stub_chain(:open,:read).and_return ""
+    to_load_contents ""
     Gargor.start
     expect {
       Gargor.load_dsl("dummy")
@@ -42,7 +42,7 @@ describe Gargor,".mutation" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    expect(Gargor.mutation).to be_kind_of Gargor::Individual
+    expect(Gargor.mutate).to be_kind_of Gargor::Individual
   end
 end
 
@@ -82,8 +82,8 @@ describe Gargor,".crossover" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    a = Gargor.mutation; a.fitness = 0.4
-    b = Gargor.mutation; b.fitness = 0.6
+    a = Gargor.mutate; a.fitness = 0.4
+    b = Gargor.mutate; b.fitness = 0.6
 
     expect(Gargor.crossover(a,b)).to be_kind_of Gargor::Individual
   end
@@ -94,12 +94,71 @@ describe Gargor,".selection" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("dummy")
-    a = Gargor.mutation; a.fitness = 0.4
-    b = Gargor.mutation; b.fitness = 0.6
-    g = [a,b]
+    a = Gargor.mutate; a.fitness = 0.4
+    b = Gargor.mutate; b.fitness = 0.6
+    g = Gargor::Individuals.new
+    g << a << b
     expect(Gargor.selection g).to be_kind_of Gargor::Individual
   end
 end
 
 
+describe Gargor, ".validate" do
+  it "raise Gargor::GargorError unless population > 0" do
+    Gargor.start
+    expect{
+      Gargor.validate 
+    }.to raise_error Gargor::ValidationError
+  end
+end
 
+describe Gargor, ".first_generation?" do
+  it "returns true if not .next_generation called" do
+    Gargor.start
+    expect(Gargor.first_generation?).to be true
+    Gargor.next_generation
+    expect(Gargor.first_generation?).to be false
+  end
+end
+
+describe Gargor, ".prev_count" do
+  it "returns previous generation count" do
+    g = Gargor::Individuals.new
+    a = Gargor.mutate; a.fitness = 0.4
+    g << a
+    expect(Gargor.prev_count(g)).to be 1
+
+    b = Gargor.mutate; b.fitness = 0 # not fit for this environment
+    c = Gargor.mutate; c.fitness = 0.6
+    g << b << c
+    expect(Gargor.prev_count(g)).to be 2
+  end
+end
+
+describe Gargor, ".select_elites" do
+  it "returns Gargor::Individuals" do
+    g = Gargor::Individuals.new
+    3.times { g << Gargor.mutate }
+
+    Gargor.start
+    gg = Gargor.select_elites(g,2)
+    expect(gg).to be_kind_of Gargor::Individuals
+    expect(gg.count).to be 2
+  end
+
+  it "returns count of elites" do
+    g = Gargor::Individuals.new
+    3.times { g << Gargor.mutate }
+    Gargor.start
+    expect(Gargor.select_elites(g,3).count).to be 3
+    expect(Gargor.select_elites(g,4).count).to be 3
+  end
+end
+
+describe Gargor, ".mutaion?" do
+  it "returns true by mutation probability" do
+    Gargor.stub(:rand).and_return(0.05,0.15)
+    expect(Gargor.mutation?(0.1)).to be true
+    expect(Gargor.mutation?(0.1)).to be false
+  end
+end

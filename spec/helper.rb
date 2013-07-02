@@ -16,17 +16,13 @@ require 'rspec'
 
 def load_fixture name
   file = File.join(File.dirname(__FILE__), "fixtures",name)
-  File.open(file).read
+  File.open(file) { |f| f.read }
 end
 
 def to_load_fixture name
-  file = double("DSL file")
-  file.stub(:read).and_return(load_fixture(name))
-  File.stub(:open).and_return file
+  File.stub(:read).and_return(load_fixture(name))
 end
 
 def to_load_contents text
-  file = double("DSL file")
-  file.stub(:read).and_return(text)
-  File.stub(:open).and_return file
+  File.stub(:read).and_return(text)
 end
