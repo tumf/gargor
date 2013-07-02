@@ -151,20 +151,25 @@ class Gargor
       [selection(g),selection(g)]
     end
 
+    def populate_one
+      if mutation?
+        mutate
+      else
+        crossover(*select_parents(@@prev_generation))
+      end
+    end
+
     def populate_next_generation
       log "population: #{@@prev_generation.length}"
       individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@elite)
 
       loop{
         break if individuals.length >= @@population
-        i = if mutation?
-              mutate
-            else
-              crossover(*select_parents(@@prev_generation))
-            end
+        i = populate_one
         individuals << i unless individuals.has?(i)
       }
-      log "poulate: #{individuals}"
+      log "populate:"
+      individuals.each { |i| log i }
       Gargor::Individuals.new(individuals.shuffle)
     end
 
