@@ -31,7 +31,7 @@ class Gargor
 
   class << self
     def log message,level = :info
-      @@logger.send(level,message)
+      @@logger.send(level,message) unless $TESTING
     end
 
     def debug message
