@@ -47,6 +47,7 @@ class Gargor
     end
 
     def start
+      @@logger = Logger.new("gargor.log")
       @@fitness_precision = 100000000
       @@prev_generation = nil
       @@individuals = []
@@ -59,6 +60,7 @@ class Gargor
       @@attack_proc = nil
       @@evaluate_proc = Proc.new { 0 }
       @@target_nodes = []
+      @@dsl_file = nil
       true
     end
     Gargor.start
@@ -79,6 +81,7 @@ class Gargor
     end
 
     def load_dsl(params_file)
+      @@dsl_file = params_file
       contents = File.read(params_file)
       new.instance_eval(contents)
       validate
@@ -193,6 +196,10 @@ class Gargor
     def opt name
       Gargor.class_variable_get("@@#{name}")
     end
+
+    def logfile file
+      File.expand_path(File.join(File.dirname(@@dsl_file),file))
+    end
   end
 
   def param name,&block
@@ -206,5 +213,11 @@ class Gargor
 
   def evaluate &block
     @@evaluate_proc = block
+  end
+
+  def logger *args, &block
+    file = args.shift
+    @@logger = Logger.new(Gargor.logfile(file),args)
+    block.call(@@logger)
   end
 end
