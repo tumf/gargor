@@ -221,4 +221,5 @@ class Gargor
     @@logger = Logger.new(Gargor.logfile(file),args)
     block.call(@@logger)
   end
+
 end
