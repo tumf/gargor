@@ -9,7 +9,7 @@ end
 
 describe Gargor,".load_dsl" do
   it "must raise RuntimeError when load from file with population 0" do
-    File.stub_chain(:open,:read).and_return ""
+    to_load_contents ""
     Gargor.start
     expect {
       Gargor.load_dsl("dummy")

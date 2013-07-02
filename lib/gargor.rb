@@ -78,7 +78,7 @@ class Gargor
     end
 
     def load_dsl(params_file)
-      contents = File.open(params_file, 'rb').read
+      contents = File.read(params_file)
       new.instance_eval(contents)
       validate
     end
@@ -145,9 +145,8 @@ class Gargor
     end
 
     def populate_next_generation
-      log "population: #{prev_generation.length}"
-      individuals = Gargor::Individuals.new
-      individuals += select_elites @@prev_generation,@@elite
+      log "population: #{@@prev_generation.length}"
+      individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@elite)
 
       loop{
         break if individuals.length >= @@population
@@ -170,7 +169,7 @@ class Gargor
                       else
                         # 次世代
                         raise ExterminationError unless prev_count >= 2
-                        populate_next_generation @@prev_generation,@@population,@@elite
+                        populate_next_generation
                       end
     end
 

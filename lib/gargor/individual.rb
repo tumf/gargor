@@ -22,25 +22,30 @@ class Gargor
     def load_now
       log "==> load current json"
       @params.each { |name,param|
-        json = File.open(param.file).read
+        json = File.read(param.file)
         @params[name].value = JsonPath.on(json,param.path).first
       }
       self
     end
 
-    def set_param param
-      File.open(param.file,"rw") { |f|
-        json = JSON.pretty_generate(JsonPath.for(f.read).gsub(param.path) { |v| param.value }.to_hash)
-        f.write(json)
-      }
+    def set_param param,json
+      JSON.pretty_generate(JsonPath.for(json).gsub(param.path) { |v| param.value }.to_hash)
     end
 
     def set_params
       log "==> set params"
-      log @params
+      jsons = {}
       @params.each { |name,param|
-        set_param(param)
-        log "#{name}    write #{param.file}"
+        unless jsons.has_key?(param.file)
+          log "load #{param.file}"
+          jsons[param.file] = File.read(param.file)
+        end
+        jsons[param.file] = set_param(param,jsons[param.file])
+        log param
+      }
+      jsons.each { |file,json|
+        File.open(file,"w") { |f| f.write(json) }
+        log "    write #{file}"
       }
     end
 
@@ -61,7 +66,7 @@ class Gargor
     end
 
     def shell command
-      out = `command`
+      out = `#{command}`
       ret = $?
       [out,ret.exitstatus]
     end

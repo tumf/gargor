@@ -9,6 +9,7 @@ class Gargor
     def initialize name
       @name = name
     end
+
     def to_s
       @value.to_s
     end
