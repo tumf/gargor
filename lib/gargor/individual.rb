@@ -56,7 +56,7 @@ class Gargor
         log "    #{cmd}"
         out,r = shell(cmd)
         unless r == 0
-          log "deploy failed"
+          log "deploy failed",Logger::ERROR
           @fitness = 0
           sleep 1
           return false
