@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+require 'version'
+
 class Gargor
-  VERSION = "0.0.3"
+  is_versioned
 end

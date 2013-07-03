@@ -5,3 +5,6 @@ task :default => :spec
 
 desc "Run all specs in spec directory"
 RSpec::Core::RakeTask.new(:spec)
+
+require 'rake/version_task'
+Rake::VersionTask.new
