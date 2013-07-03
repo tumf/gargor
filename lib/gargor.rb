@@ -35,8 +35,7 @@ class Gargor
   class << self
     def log message,level=Logger::INFO
       return if $TESTING
-
-      message.to_s.split("\n").each { |line| @@logger.send(level,line) }
+      message.to_s.split("\n").each { |line| @@logger.add(level) {line} }
     end
 
     def debug message
