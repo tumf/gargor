@@ -5,33 +5,11 @@ require "logger"
 require "gargor/version"
 require "gargor/individual"
 require "gargor/parameter"
+require "gargor/exceptions"
+require "gargor/individuals"
+require "gargor/dsl"
 
 class Gargor
-  class GargorError < RuntimeError; end
-  class ExterminationError < GargorError; end
-  class ParameterError < GargorError; end
-  class ValidationError < GargorError; end
-  class ArgumentError < GargorError; end
-
-  class Individuals < Array
-    def has? i
-      !!self.find { |ii| ii.params == i.params }
-    end
-  end
-
-  GLOBAL_OPTS = ["population","max_generations","target_nodes",
-                 "attack_cmd","elite","mutation","target_cooking_cmd",
-                 "fitness_precision"]
-
-  GLOBAL_OPTS.each { |name| 
-    define_method(name) { |val|
-      Gargor.class_variable_set("@@#{name}", val)
-    }
-  }
-
-  def log message,level=Logger::INFO
-    Gargor.log(message,level)
-  end
   class << self
     def log message,level=Logger::INFO
       return if $TESTING
@@ -223,24 +201,4 @@ class Gargor
     end
 
   end
-
-  def param name,&block
-    @@param_procs[name] = block
-  end
-
-  def attack cmd,&block
-    @@attack_cmd = cmd
-    @@attack_proc = block
-  end
-
-  def evaluate &block
-    @@evaluate_proc = block
-  end
-
-  def logger *args, &block
-    file = args.shift
-    @@logger = Logger.new(Gargor.logfile(file),*args)
-    block.call(@@logger) if block
-  end
-
 end
