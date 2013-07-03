@@ -21,34 +21,42 @@ class Gargor
     end
 
     def params
-      result = {}
-      GLOBAL_OPTS.map { |name| 
-        result[name] = Gargor.class_variable_get("@@#{name}")
-      }
-      result
+      @@dsl.params
+    end
+
+    def generation
+      @@generation
+    end
+
+    def prev_generation
+      @@prev_generation
+    end
+
+    def individuals
+      @@individuals
+    end
+
+    def logger
+      @@logger
+    end
+
+    def logger= logger
+      @@logger = logger
     end
 
     def start
       @@logger = Logger.new(STDOUT)
-      @@fitness_precision = 100000000
-      @@prev_generation = nil
       @@individuals = []
-      @@param_procs = {}
-      @@population = 0
-      @@max_generations = 1
+      @@prev_generation = nil
       @@generation = 1
-      @@elite = 0
-      @@attack_cmd = "false"
-      @@attack_proc = nil
-      @@evaluate_proc = Proc.new { 0 }
-      @@target_nodes = []
+      @@dsl = Dsl.new
       @@dsl_file = nil
       true
     end
     Gargor.start
 
     def validate
-      raise ValidationError,"POPULATION isn't > 0" unless @@population > 0
+      raise ValidationError,"POPULATION isn't > 0" unless @@dsl.population > 0
       true
     end
 
@@ -65,13 +73,13 @@ class Gargor
     def load_dsl(params_file)
       @@dsl_file = params_file
       contents = File.read(params_file)
-      new.instance_eval(contents)
+      @@dsl.instance_eval(contents)
       validate
     end
 
     def mutate
       individual = Individual.new
-      @@param_procs.each { |name,proc|
+      @@dsl.param_procs.each { |name,proc|
         param =  Parameter.new(name)
         param.instance_eval(&proc)
         individual.params[name] = param
@@ -81,12 +89,12 @@ class Gargor
     end
 
     # 浮動小数点対応のrand
-    def float_rand(f,p = @@fitness_precision)
+    def float_rand(f,p = @@dsl.fitness_precision)
       raise ArgumentError,"max must be > 0" unless f > 0
-      f *= @@fitness_precision
+      f *= p
       i = f.to_i
       f = rand(i)
-      f / @@fitness_precision.to_f
+      f / p.to_f
     end
 
     def crossover a,b
@@ -112,7 +120,7 @@ class Gargor
       individuals = Gargor::Individuals.new
       individuals << mutate.load_now
       loop{
-        break if individuals.length >= @@population
+        break if individuals.length >= @@dsl.population
         individuals << mutate
       }
       
@@ -124,7 +132,7 @@ class Gargor
       Gargor::Individuals.new(g.sort{ |a,b| a.fitness<=>b.fitness }.last(count))
     end
 
-    def mutation? mutation=@@mutation
+    def mutation? mutation=@@dsl.mutation
       rand <= mutation
     end
 
@@ -142,9 +150,9 @@ class Gargor
 
     def populate_next_generation
       log "population: #{@@prev_generation.length}"
-      individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@elite)
+      individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@dsl.elite)
 
-      until individuals.length >= @@population do
+      until individuals.length >= @@dsl.population do
         i = populate_one
         individuals << i unless individuals.has?(i)
       end
@@ -164,23 +172,18 @@ class Gargor
       @@individuals.each { |i| log i }
     end
 
-
     def next_generation
       log "<== end generation #{@@generation}"
       @@generation += 1
-      return false if @@generation > @@max_generations
+      return false if @@generation > @@dsl.max_generations
 
       log "==> next generation #{@@generation}"
       @@prev_generation = @@individuals
       true
     end
 
-    def individuals
-      @@individuals
-    end
-
     def opt name
-      Gargor.class_variable_get("@@#{name}")
+      @@dsl.send(name)
     end
 
     def logfile file
@@ -188,7 +191,7 @@ class Gargor
     end
 
     def total_trials
-      @@population+(@@population-@@elite)*(@@max_generations-1)
+      @@dsl.population+(@@dsl.population-@@dsl.elite)*(@@dsl.max_generations-1)
     end
 
     def last_trials_at_this_generation
@@ -197,7 +200,7 @@ class Gargor
 
     def last_trials
       last_trials_at_this_generation +
-        (@@max_generations-@@generation)*(@@population-@@elite)
+        (@@dsl.max_generations-@@generation)*(@@dsl.population-@@dsl.elite)
     end
 
   end

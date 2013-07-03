@@ -53,9 +53,9 @@ describe Gargor,".poplutate" do
     Gargor.load_dsl("dummy")
     to_load_contents("{}") # dummy json
     expect(Gargor.populate.size).to be Gargor.params["population"]
-    expect(Gargor.opt("generation")).to be 1
+    expect(Gargor.generation).to be 1
     expect(Gargor.next_generation).to be true
-    expect(Gargor.opt("generation")).to be 2
+    expect(Gargor.generation).to be 2
 
     expect{
       Gargor.populate
@@ -177,7 +177,7 @@ describe Gargor, ".logger" do
     to_load_fixture "sample-1.rb"
     Gargor.start
     Gargor.load_dsl("/tmp/test.rb")
-    expect(Gargor.opt("logger")).to be_kind_of Logger
-    expect(Gargor.opt("logger").level).to be Logger::INFO
+    expect(Gargor.logger).to be_kind_of Logger
+    expect(Gargor.logger.level).to be Logger::INFO
   end
 end
