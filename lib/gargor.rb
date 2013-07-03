@@ -166,13 +166,10 @@ class Gargor
       log "population: #{@@prev_generation.length}"
       individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@elite)
 
-      loop{
-        break if individuals.length >= @@population
+      until individuals.length >= @@population do
         i = populate_one
         individuals << i unless individuals.has?(i)
-      }
-      log "populate:"
-      individuals.each { |i| log i }
+      end
       Gargor::Individuals.new(individuals.shuffle)
     end
 
@@ -185,6 +182,8 @@ class Gargor
                         raise ExterminationError unless prev_count >= 2
                         populate_next_generation
                       end
+      log "populate:"
+      @@individuals.each { |i| log i }
     end
 
 
