@@ -29,14 +29,17 @@ class Gargor
     }
   }
 
+  def log message,level=Logger::INFO
+    Gargor.log(message,level)
+  end
   class << self
-    def log message,level = :info
+    def log message,level=Logger::INFO
       return if $TESTING
-      message.split("\n").each { |line| @@logger.send(level,line) }
+      message.split("\n").each { |line| @@logger.add(level) {line} }
     end
 
     def debug message
-      log message,:debug
+      log message,Logger::DEBUG
     end
 
     def params
@@ -48,7 +51,7 @@ class Gargor
     end
 
     def start
-      @@logger = Logger.new("gargor.log")
+      @@logger = Logger.new(STDOUT)
       @@fitness_precision = 100000000
       @@prev_generation = nil
       @@individuals = []
@@ -223,8 +226,8 @@ class Gargor
 
   def logger *args, &block
     file = args.shift
-    @@logger = Logger.new(Gargor.logfile(file),args)
-    block.call(@@logger)
+    @@logger = Logger.new(Gargor.logfile(file),*args)
+    block.call(@@logger) if block
   end
 
 end

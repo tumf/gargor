@@ -15,7 +15,7 @@ class Gargor
       [@params,@fitness].to_s
     end
 
-    def log message,level = :debug
+    def log message,level = Logger::INFO
       Gargor.log message,level
     end
 
