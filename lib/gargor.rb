@@ -209,6 +209,20 @@ class Gargor
     def logfile file
       File.expand_path(File.join(File.dirname(@@dsl_file),file))
     end
+
+    def total_trials
+      @@population+(@@population-@@elite)*(@@max_generations-1)
+    end
+
+    def last_trials_at_this_generation
+      @@individuals.select{ |i| i.fitness == nil }.count
+    end
+
+    def last_trials
+      last_trials_at_this_generation +
+        (@@max_generations-@@generation)*(@@population-@@elite)
+    end
+
   end
 
   def param name,&block
