@@ -215,7 +215,7 @@ class Gargor
     end
 
     def last_trials_at_this_generation
-      @@individuals.select{ |i| i.fitness == null }.count
+      @@individuals.select{ |i| i.fitness == nil }.count
     end
 
     def last_trials
