@@ -29,12 +29,17 @@ class Gargor
     }
   }
 
+  def log message,level=Logger::INFO
+    Gargor.log(message,level)
+  end
   class << self
-    def log message,level = :debug
-      unless $TESTING
-        @@logger ||= Logger.new(STDOUT)
-        @@logger.send(level,message)
-      end
+    def log message,level=Logger::INFO
+      return if $TESTING
+      message.to_s.split("\n").each { |line| @@logger.add(level) {line} }
+    end
+
+    def debug message
+      log message,Logger::DEBUG
     end
 
     def params
@@ -46,6 +51,7 @@ class Gargor
     end
 
     def start
+      @@logger = Logger.new(STDOUT)
       @@fitness_precision = 100000000
       @@prev_generation = nil
       @@individuals = []
@@ -58,6 +64,7 @@ class Gargor
       @@attack_proc = nil
       @@evaluate_proc = Proc.new { 0 }
       @@target_nodes = []
+      @@dsl_file = nil
       true
     end
     Gargor.start
@@ -78,6 +85,7 @@ class Gargor
     end
 
     def load_dsl(params_file)
+      @@dsl_file = params_file
       contents = File.read(params_file)
       new.instance_eval(contents)
       validate
@@ -90,6 +98,7 @@ class Gargor
         param.instance_eval(&proc)
         individual.params[name] = param
       }
+      log "mutate #{individual}"
       individual
     end
 
@@ -145,21 +154,25 @@ class Gargor
       [selection(g),selection(g)]
     end
 
+    def populate_one
+      if mutation?
+        mutate
+      else
+        crossover(*select_parents(@@prev_generation))
+      end
+    end
+
     def populate_next_generation
       log "population: #{@@prev_generation.length}"
       individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@elite)
 
       loop{
         break if individuals.length >= @@population
-        i = if mutation?
-              log "mutate #{i}"
-              mutate
-            else
-              crossover(*select_parents(@@prev_generation))
-            end
+        i = populate_one
         individuals << i unless individuals.has?(i)
       }
-      log "poulate: #{individuals}"
+      log "populate:"
+      individuals.each { |i| log i }
       Gargor::Individuals.new(individuals.shuffle)
     end
 
@@ -192,6 +205,24 @@ class Gargor
     def opt name
       Gargor.class_variable_get("@@#{name}")
     end
+
+    def logfile file
+      File.expand_path(File.join(File.dirname(@@dsl_file),file))
+    end
+
+    def total_trials
+      @@population+(@@population-@@elite)*(@@max_generations-1)
+    end
+
+    def last_trials_at_this_generation
+      @@individuals.select{ |i| i.fitness == nil }.count
+    end
+
+    def last_trials
+      last_trials_at_this_generation +
+        (@@max_generations-@@generation)*(@@population-@@elite)
+    end
+
   end
 
   def param name,&block
@@ -206,4 +237,11 @@ class Gargor
   def evaluate &block
     @@evaluate_proc = block
   end
+
+  def logger *args, &block
+    file = args.shift
+    @@logger = Logger.new(Gargor.logfile(file),*args)
+    block.call(@@logger) if block
+  end
+
 end

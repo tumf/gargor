@@ -15,7 +15,7 @@ class Gargor
       [@params,@fitness].to_s
     end
 
-    def log message,level = :debug
+    def log message,level = Logger::INFO
       Gargor.log message,level
     end
 
@@ -56,7 +56,7 @@ class Gargor
         log "    #{cmd}"
         out,r = shell(cmd)
         unless r == 0
-          log "deploy failed"
+          log "deploy failed",Logger::ERROR
           @fitness = 0
           sleep 1
           return false

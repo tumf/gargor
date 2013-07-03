@@ -162,3 +162,22 @@ describe Gargor, ".mutaion?" do
     expect(Gargor.mutation?(0.1)).to be false
   end
 end
+
+describe Gargor, ".logfile" do
+  it "return log full-path" do
+    to_load_fixture "sample-1.rb"
+    Gargor.start
+    Gargor.load_dsl("/tmp/test.rb")
+    expect(Gargor.logfile("gargor.log")).to eq "/tmp/gargor.log"
+  end
+end
+
+describe Gargor, ".logger" do
+  it "set Logger object to @@logger " do
+    to_load_fixture "sample-1.rb"
+    Gargor.start
+    Gargor.load_dsl("/tmp/test.rb")
+    expect(Gargor.opt("logger")).to be_kind_of Logger
+    expect(Gargor.opt("logger").level).to be Logger::INFO
+  end
+end
