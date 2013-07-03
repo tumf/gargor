@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'json'
 gem 'jsonpath'
+gem "progressbar", "~> 0.20.0"
 
 group :development do
   gem 'pry'

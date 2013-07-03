@@ -2,6 +2,7 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 $TESTING=false
 require 'gargor'
+require 'progressbar'
 
 dsl_file=ARGV.last||"gargor.rb"
 
@@ -17,15 +18,18 @@ rescue
   exit 1
 end
 
+pbar = ProgressBar.new("auto-tuning",Gargor.total_trials)
 loop {
   Gargor.populate.each { |i|
     if i.fitness == nil
       i.set_params
       i.attack if i.deploy
     end
+    pbar.set(Gargor.total_trials-Gargor.last_trials)
   }
   break unless Gargor.next_generation
 }
+pbar.finish
 
 best = Gargor.individuals.max { |a,b| a.fitness <=> b.fitness }
 if best
