@@ -77,6 +77,15 @@ target_nodes ["www-1.example","www-2.example","db-1.example"]
 # attack command
 attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 
+# logger
+logger "gargor.log"
+
+# or optional settings like blows:
+# 
+# logger "gargor.log" do |log|
+#   log.level = Logger::INFO
+# end
+
 
 # evalute of the attack
 # code: exit code of attack_cmd command (0 => succees)

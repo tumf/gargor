@@ -46,6 +46,14 @@ target_nodes ["www-1.example","www-2.example","db-1.example"]
 # 攻撃コマンド
 attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 
+# ログ
+logger "gargor.log"
+
+# もしくは以下のようにしてLoggerの設定ができる
+# 
+# logger "gargor.log" do |log|
+#   log.level = Logger::INFO
+# end
 
 # 攻撃結果の評価
 # code: attack_cmdのプロセス終了コード(普通は0:成功)
