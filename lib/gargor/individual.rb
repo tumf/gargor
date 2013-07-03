@@ -41,11 +41,11 @@ class Gargor
           jsons[param.file] = File.read(param.file)
         end
         jsons[param.file] = set_param(param,jsons[param.file])
-        log param
+        log " #{name}: #{param}"
       }
       jsons.each { |file,json|
         File.open(file,"w") { |f| f.write(json) }
-        log "    write #{file}"
+        log " write #{file}"
       }
     end
 
