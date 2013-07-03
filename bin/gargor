@@ -12,7 +12,9 @@ end
 begin
   Gargor.start
   Gargor.load_dsl(dsl_file)
-rescue
+rescue =>e
+  STDERR.puts e.backtrace.join("\n")
+
   usage
   exit 1
 end
