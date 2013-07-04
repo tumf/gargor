@@ -33,7 +33,7 @@ population 10
 # elite number of some generation.(carried over)
 elite 1
 
-# Probability of mutation　set "0.01" to "1%" (when crossover)
+# Probability of mutation　set "0.01" (is 1%)
 mutation 0.01
 
 # target cook command : '%s' will replace by node name.
@@ -49,7 +49,7 @@ attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 # logger
 logger "gargor.log"
 
-# or optional settings like blows:
+# or optional settings like belows:
 # 
 # logger "gargor.log" do |log|
 #   log.level = Logger::INFO
