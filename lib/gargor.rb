@@ -44,6 +44,10 @@ class Gargor
       @@logger = logger
     end
 
+    def opt name
+      @@dsl.send(name)
+    end
+
     def start
       @@logger = Logger.new(STDOUT)
       @@individuals = []
@@ -56,7 +60,7 @@ class Gargor
     Gargor.start
 
     def validate
-      raise ValidationError,"POPULATION isn't > 0" unless @@dsl.population > 0
+      raise ValidationError,"POPULATION isn't > 0" unless opt("population") > 0
       true
     end
 
@@ -120,7 +124,7 @@ class Gargor
       individuals = Gargor::Individuals.new
       individuals << mutate.load_now
       loop{
-        break if individuals.length >= @@dsl.population
+        break if individuals.length >= opt("population")
         individuals << mutate
       }
       
@@ -132,7 +136,7 @@ class Gargor
       Gargor::Individuals.new(g.sort{ |a,b| a.fitness<=>b.fitness }.last(count))
     end
 
-    def mutation? mutation=@@dsl.mutation
+    def mutation? mutation= opt("mutation")
       rand <= mutation
     end
 
@@ -150,9 +154,9 @@ class Gargor
 
     def populate_next_generation
       log "population: #{@@prev_generation.length}"
-      individuals = Gargor::Individuals.new(select_elites @@prev_generation,@@dsl.elite)
+      individuals = Gargor::Individuals.new(select_elites @@prev_generation,opt("elite"))
 
-      until individuals.length >= @@dsl.population do
+      until individuals.length >= opt(population) do
         i = populate_one
         individuals << i unless individuals.has?(i)
       end
@@ -175,15 +179,11 @@ class Gargor
     def next_generation
       log "<== end generation #{@@generation}"
       @@generation += 1
-      return false if @@generation > @@dsl.max_generations
+      return false if @@generation > opt("max_generations")
 
       log "==> next generation #{@@generation}"
       @@prev_generation = @@individuals
       true
-    end
-
-    def opt name
-      @@dsl.send(name)
     end
 
     def logfile file
@@ -191,7 +191,7 @@ class Gargor
     end
 
     def total_trials
-      @@dsl.population+(@@dsl.population-@@dsl.elite)*(@@dsl.max_generations-1)
+      opt("population")+(opt("population")-opt("elite"))*(opt("max_generations")-1)
     end
 
     def last_trials_at_this_generation
@@ -200,7 +200,7 @@ class Gargor
 
     def last_trials
       last_trials_at_this_generation +
-        (@@dsl.max_generations-@@generation)*(@@dsl.population-@@dsl.elite)
+        (opt("max_generations")-@@generation)*(opt("population")-opt("elite"))
     end
 
   end
