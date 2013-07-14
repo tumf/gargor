@@ -28,3 +28,7 @@ end
 def to_load_contents text
   File.stub(:read).and_return(text)
 end
+
+
+require 'coveralls'
+Coveralls.wear!

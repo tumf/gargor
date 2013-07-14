@@ -17,6 +17,7 @@ group :test, :development do
   gem 'rspec'
   gem 'rspec-mocks'
   gem 'simplecov'
+  gem 'coveralls', require: false
 end
 
 # Specify your gem's dependencies in gargor.gemspec
