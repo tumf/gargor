@@ -59,7 +59,7 @@ class Gargor
           log "deploy failed",Logger::ERROR
           @fitness = 0
           sleep 1
-          return false
+          raise Gargor::DeployError
         end
       }
       true

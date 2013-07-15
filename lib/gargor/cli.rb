@@ -30,30 +30,38 @@ class Gargor
       Gargor.options = options
 
       pbar.set(0)
-      begin
-        Gargor.populate.each { |i|
-          trial i if i.fitness == nil
-          pbar.set(Gargor.total_trials-Gargor.last_trials)
-        }
-      end while(Gargor.next_generation)
-
+      trials
       best = best_individual
       deploy best 
       pbar.finish
       puts Gargor::OptimizeReporter.table(Gargor.base,best)
     rescue ExterminationError =>e
-      Gargor.base && deploy(Gargor.base)
-
-      STDERR.puts e.message
-      STDERR.puts e.backtrace.join("\n") if options["verbose"]
-      exit 1
+      recover
+      report_error_exit(e)
     rescue =>e
-      STDERR.puts e.message
-      STDERR.puts e.backtrace.join("\n") if options["verbose"]
-      exit 1
+      report_error_exit(e)
     end
 
     no_commands{
+      def trials
+        begin
+          Gargor.populate.each { |i|
+            trial(i) if i.fitness == nil 
+            pbar.set(Gargor.total_trials-Gargor.last_trials)
+          }
+        end while(Gargor.next_generation)
+      end
+
+      def recover
+        Gargor.base && deploy(Gargor.base)
+      end
+
+      def report_error_exit e,ret = 1
+        STDERR.puts e.message
+        STDERR.puts e.backtrace.join("\n") if options["verbose"]
+        exit ret
+      end
+
       def pbar
         @pbar = Double.new if options["no_progress_bar"]
         @pbar ||= ProgressBar.new(" Tuning",Gargor.total_trials)
@@ -67,7 +75,7 @@ class Gargor
       def trial i
         deploy i
         i.attack
-      rescue =>e
+      rescue Gargor::DeployError =>e
         i.fitness = 0
       end
 
