@@ -54,6 +54,7 @@ class Gargor
 
     def start
       @@logger = Logger.new(STDOUT)
+      @@base = nil
       @@individuals = []
       @@prev_generation = nil
       @@generation = 1
