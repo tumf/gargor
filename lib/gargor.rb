@@ -85,6 +85,10 @@ class Gargor
       validate
     end
 
+    def options= options
+      @@dsl.options = options
+    end
+
     def mutate
       individual = Individual.new
       @@dsl.param_procs.each { |name,proc|

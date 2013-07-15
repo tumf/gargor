@@ -23,6 +23,7 @@ class Gargor
       require 'progressbar'
       Gargor.start
       Gargor.load_dsl(file)
+      Gargor.options = options
 
       pbar.set(0) unless options[:no_progress_bar]
       begin
