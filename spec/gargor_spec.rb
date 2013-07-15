@@ -181,3 +181,12 @@ describe Gargor, ".logger" do
     expect(Gargor.logger.level).to be Logger::INFO
   end
 end
+
+describe Gargor, ".options=" do
+  it "set options['target_nodes'] to array " do
+    options = {"target_nodes" => "node1,node2,node3"}
+    Gargor.options= options
+    expect(Gargor.opt("target_nodes")).to be_kind_of Array
+  end
+end
+

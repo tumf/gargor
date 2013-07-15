@@ -12,6 +12,16 @@ class Gargor
         instance_variable_get("@#{name}")
       }
     }
+    def target_nodes *args
+      return @target_nodes if args.count == 0
+      nodes = args.shift
+      @target_nodes = if nodes.is_a? Array
+                        nodes
+                      else
+                        nodes.split(",")
+                      end
+    end
+
     attr_accessor :param_procs, :attack_proc, :evaluate_proc
 
     def initialize
