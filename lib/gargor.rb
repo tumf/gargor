@@ -48,8 +48,13 @@ class Gargor
       @@dsl.send(name)
     end
 
+    def base
+      @@base
+    end
+
     def start
       @@logger = Logger.new(STDOUT)
+      @@base = nil
       @@individuals = []
       @@prev_generation = nil
       @@generation = 1
@@ -79,6 +84,10 @@ class Gargor
       contents = File.read(params_file)
       @@dsl.instance_eval(contents)
       validate
+    end
+
+    def options= options
+      @@dsl.options = options
     end
 
     def mutate
@@ -121,8 +130,9 @@ class Gargor
     end
 
     def populate_first_generation
+      @@base = mutate.load_now
       individuals = Gargor::Individuals.new
-      individuals << mutate.load_now
+      individuals << base
       loop{
         break if individuals.length >= opt("population")
         individuals << mutate

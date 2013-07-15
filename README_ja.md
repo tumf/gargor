@@ -19,7 +19,9 @@ Ruby 1.9以降が必要です
 
 ## 使い方
 
-    $ gargor [dsl-file]
+    $ gargor [options] tune [dsl-file]
+
+### DSLファイル
 
 `gargor`の設定情報は、内部DSLによりに以下のように記述します。
 
