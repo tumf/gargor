@@ -239,10 +239,10 @@ I use [green hakai](https://github.com/KLab/green-hakai/).
 
 You can use ab(Apache bench) and so on.
 
-## Continuas Performance Tuning
+## Continuous Performance Tuning
 
 After v1.0, `gargor` can save last status of the individuals to file (which indicates `state` in DSL or `--state=FILE` option).
-You can excecute `gargor` by the daily cron, your servers will be tuned continuaslly.
+You can excecute `gargor` by the daily cron, your servers will be tuned continuouslly.
 
 ```
 0 4 * * * cd /path/to/project && gargor --state=.gargor.status
