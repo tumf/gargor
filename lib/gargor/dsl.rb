@@ -2,7 +2,7 @@ class Gargor
   class Dsl
     GLOBAL_OPTS = ["population","max_generations","target_nodes",
                    "attack_cmd","elite","mutation","target_cooking_cmd",
-                   "fitness_precision"]
+                   "fitness_precision","state"]
 
     GLOBAL_OPTS.each { |name| 
       define_method(name) { |*args|
@@ -34,6 +34,7 @@ class Gargor
       @elite = 0
       @attack_cmd = "false"
       @target_nodes = []
+      @state = nil
     end
 
     def params
