@@ -27,11 +27,11 @@ describe Gargor::Individual, "#deploy" do
     expect(@i.deploy).to be true
   end
 
-  it "returns false if deploy failed" do
+  it "raise Gargor::DeployError if deploy failed" do
     @i.stub(:shell) { |cmd|
       ["",255]
     }
-    expect(@i.deploy).to be false
+    expect{@i.deploy}.to raise_error Gargor::DeployError
     
   end
 end
