@@ -1,3 +1,4 @@
+require 'json'
 class Gargor
   class Dsl
     GLOBAL_OPTS = ["population","max_generations","target_nodes",
@@ -72,5 +73,39 @@ class Gargor
       block.call(logger) if block
       Gargor.logger = logger
     end
+
+    def has_state?
+      !!@state
+    end
+
+    def create_individual values = nil
+      individual = Individual.new
+      param_procs.each { |name,proc|
+        param =  Parameter.new(name)
+        param.instance_eval(&proc)
+        values && param.value = values[name]
+        individual.params[name] = param
+      }
+      individual
+    end
+
+    def load_state file=@state
+      log "load state #{file}"
+      state = JSON.parse(File.read(file))
+      individuals = Individuals.new
+      state.each { |i|
+        individuals << create_individual(i)
+      }
+      individuals
+    rescue Errno::ENOENT =>e
+      false
+    end
+
+    def save_state individuals,file = @state
+      log "save state #{file}"
+      json = individuals.to_json
+      File.open(file,"w") { |f| f.write(json) }
+    end
+
   end
 end
