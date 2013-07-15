@@ -166,7 +166,7 @@ class Gargor
       log "population: #{@@prev_generation.length}"
       individuals = Gargor::Individuals.new(select_elites @@prev_generation,opt("elite"))
 
-      until individuals.length >= opt(population) do
+      until individuals.length >= opt("population") do
         i = populate_one
         individuals << i unless individuals.has?(i)
       end
