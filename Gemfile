@@ -4,6 +4,7 @@ gem 'json'
 gem 'jsonpath'
 gem "progressbar", "~> 0.20.0"
 gem "version", "~> 1.0.0"
+gem "thor", "~> 0.18.1"
 
 group :development do
   gem 'pry'
