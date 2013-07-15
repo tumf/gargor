@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'json'
-gem 'jsonpath'
+gem "json", "~> 1.8.0"
+gem "jsonpath", "~> 0.5.3"
 gem "progressbar", "~> 0.20.0"
 gem "version", "~> 1.0.0"
 
@@ -15,7 +15,6 @@ group :test, :development do
   gem 'coveralls'
   gem 'fakeweb'
   gem 'rspec'
-  gem 'rspec-mocks'
   gem 'simplecov'
   gem 'coveralls', require: false
 end
