@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem "rake", "~> 10.1.0"
 gem "json", "~> 1.8.0"
 gem "jsonpath", "~> 0.5.3"
 gem "progressbar", "~> 0.20.0"
