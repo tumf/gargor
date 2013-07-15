@@ -32,6 +32,12 @@ class Gargor
       result
     end
 
+    def options= options
+      GLOBAL_OPTS.each { |name|
+        send(name.to_sym,options[name]) if options.has_key?(name)
+      }
+    end
+
     def log message,level=Logger::INFO
       Gargor.log(message,level)
     end

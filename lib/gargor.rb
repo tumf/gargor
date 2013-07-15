@@ -54,6 +54,7 @@ class Gargor
 
     def start
       @@logger = Logger.new(STDOUT)
+      @@base = nil
       @@individuals = []
       @@prev_generation = nil
       @@generation = 1
@@ -83,6 +84,10 @@ class Gargor
       contents = File.read(params_file)
       @@dsl.instance_eval(contents)
       validate
+    end
+
+    def options= options
+      @@dsl.options = options
     end
 
     def mutate

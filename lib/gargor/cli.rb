@@ -23,6 +23,7 @@ class Gargor
       require 'progressbar'
       Gargor.start
       Gargor.load_dsl(file)
+      Gargor.options = options
 
       pbar.set(0) unless options[:no_progress_bar]
       begin
@@ -36,6 +37,12 @@ class Gargor
       deploy best 
       pbar.finish unless options[:no_progress_bar]
       puts Gargor::OptimizeReporter.table(Gargor.base,best)
+    rescue ExterminationError =>e
+      Gargor.base && deploy(Gargor.base)
+
+      STDERR.puts e.message
+      STDERR.puts e.backtrace.join("\n") if options["verbose"]
+      exit 1
     rescue =>e
       STDERR.puts e.message
       STDERR.puts e.backtrace.join("\n") if options[:verbose]
