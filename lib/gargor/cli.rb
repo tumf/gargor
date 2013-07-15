@@ -42,13 +42,13 @@ class Gargor
       puts Gargor::OptimizeReporter.table(Gargor.base,best)
     rescue =>e
       STDERR.puts e.message
-      STDERR.puts e.backtrace.join("\n") if options[:verbose]
+      STDERR.puts e.backtrace.join("\n") if options["verbose"]
       exit 1
     end
 
     no_commands{
       def pbar
-        @pbar = Double.new if options[:no_progress_bar]
+        @pbar = Double.new if options["no_progress_bar"]
         @pbar ||= ProgressBar.new(" Tuning",Gargor.total_trials)
       end
 
