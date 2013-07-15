@@ -15,6 +15,12 @@ class Gargor
       [@params,@fitness].to_s
     end
 
+    def to_hash
+      hash = {}
+      @params.each { |name,param| hash[name] = param.value }
+      hash
+    end
+
     def log message,level = Logger::INFO
       Gargor.log message,level
     end

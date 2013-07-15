@@ -19,7 +19,7 @@ Ruby 1.9-
 
 ## Usage
 
-    $ gargor [dsl-file]
+    $ gargor [options] tune [dsl-file]
 
 The dsl-file of `gargor` should be written as belows:
 
@@ -48,6 +48,9 @@ attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
 
 # logger
 logger "gargor.log"
+
+# state
+state ".gargor.state"
 
 # or optional settings like belows:
 # 
@@ -235,6 +238,15 @@ MaxRequestsPerChild  <%= node["httpd"]["max_request_per_child"] %>
 I use [green hakai](https://github.com/KLab/green-hakai/).
 
 You can use ab(Apache bench) and so on.
+
+## Continuas Performance Tuning
+
+After v1.0, `gargor` can save last status of the individuals to file (which indicates `state` in DSL or `--state=FILE` option).
+You can excecute `gargor` by the daily cron, your servers will be tuned continuaslly.
+
+```
+0 4 * * * cd /path/to/project && gargor --state=.gargor.status
+```
 
 ## Contributing
 

@@ -91,12 +91,7 @@ class Gargor
     end
 
     def mutate
-      individual = Individual.new
-      @@dsl.param_procs.each { |name,proc|
-        param =  Parameter.new(name)
-        param.instance_eval(&proc)
-        individual.params[name] = param
-      }
+      individual = @@dsl.create_individual
       log "mutate #{individual}"
       individual
     end
@@ -130,14 +125,15 @@ class Gargor
     end
 
     def populate_first_generation
-      @@base = mutate.load_now
-      individuals = Gargor::Individuals.new
-      individuals << base
-      loop{
-        break if individuals.length >= opt("population")
-        individuals << mutate
-      }
-      
+      @@base = @@dsl.create_individual.load_now
+      individuals = @@dsl.load_state if @@dsl.has_state?
+      unless individuals
+        individuals = Gargor::Individuals.new
+        individuals << base
+        until individuals.length >= opt("population")
+          individuals << mutate
+        end
+      end
       Gargor::Individuals.new(individuals.shuffle)
     end
 
@@ -182,6 +178,9 @@ class Gargor
                         raise ExterminationError unless prev_count >= 2
                         populate_next_generation
                       end
+
+       @@dsl.save_state(@@individuals) if @@dsl.has_state?
+
       log "populate:"
       @@individuals.each { |i| log i }
     end
