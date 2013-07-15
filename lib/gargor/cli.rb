@@ -57,8 +57,10 @@ class Gargor
       end
 
       def report_error_exit e,ret = 1
-        STDERR.puts e.message
-        STDERR.puts e.backtrace.join("\n") if options["verbose"]
+        unless $TESTING
+          STDERR.puts e.message
+          STDERR.puts e.backtrace.join("\n") if options["verbose"]
+        end
         exit ret
       end
 
