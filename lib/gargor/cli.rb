@@ -88,4 +88,3 @@ class Gargor
 
   end
 end
-Gargor::CLI.start(ARGV)

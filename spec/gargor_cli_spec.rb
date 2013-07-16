@@ -10,3 +10,4 @@ describe Gargor::CLI,".start" do
     expect{Gargor::CLI.start([])}.to raise_error(SystemExit)
   end
 end
+
