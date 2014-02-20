@@ -1,4 +1,9 @@
-# gargor [![Build Status](https://travis-ci.org/tumf/gargor.png?branch=master)](https://travis-ci.org/tumf/gargor) [![Gem Version](https://badge.fury.io/rb/gargor.png)](http://badge.fury.io/rb/gargor) [![Code Climate](https://codeclimate.com/github/tumf/gargor.png)](https://codeclimate.com/github/tumf/gargor) [![Dependency Status](https://gemnasium.com/tumf/gargor.png)](https://gemnasium.com/tumf/gargor) [![Coverage Status](https://coveralls.io/repos/tumf/gargor/badge.png)](https://coveralls.io/r/tumf/gargor)
+# gargor
+[![Build Status](https://travis-ci.org/tumf/gargor.png?branch=master)](https://travis-ci.org/tumf/gargor)
+[![Gem Version](https://badge.fury.io/rb/gargor.png)](http://badge.fury.io/rb/gargor)
+[![Code Climate](https://codeclimate.com/github/tumf/gargor.png)](https://codeclimate.com/github/tumf/gargor) [![Dependency Status](https://gemnasium.com/tumf/gargor.png)](https://gemnasium.com/tumf/gargor)
+[![Coverage Status](https://coveralls.io/repos/tumf/gargor/badge.png)](https://coveralls.io/r/tumf/gargor)
+[![Gitter chat](https://badges.gitter.im/tumf/gargor.png)](https://gitter.im/tumf/gargor)
 
 `gargor` is software which uses genetic algorithm to support parameter tuning of the servers controlled by Chef.Using this software, you are able to optimize and automate the server tuning, which you did until now based on a combination of my experience and intuition. 　
 
