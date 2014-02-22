@@ -262,3 +262,7 @@ You can excecute `gargor` by the daily cron, your servers will be tuned continuo
 5. Create new Pull Request
 
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/tumf/gargor/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
