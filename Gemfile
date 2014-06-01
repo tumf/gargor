@@ -15,7 +15,6 @@ end
 
 group :test, :development do
   gem 'childlabor'
-  gem 'coveralls'
   gem 'fakeweb'
   gem 'rspec'
   gem 'simplecov'
