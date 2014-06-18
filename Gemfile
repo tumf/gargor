@@ -13,6 +13,7 @@ group :development do
 end
 
 group :test, :development do
+  gem 'rake'
   gem 'childlabor'
   gem 'fakeweb'
   gem 'rspec'

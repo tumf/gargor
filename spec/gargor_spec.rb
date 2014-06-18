@@ -65,7 +65,7 @@ end
 
 describe Gargor,".float_rand" do
   it "returns 0...max" do
-    Gargor.stub(:rand) { |max| max/2.0 }
+    allow(Gargor).to receive(:rand) { |max| max/2.0 }
     expect(Gargor.float_rand(0.1,100)).to eq 0.05
   end
 
@@ -157,7 +157,7 @@ end
 
 describe Gargor, ".mutaion?" do
   it "returns true by mutation probability" do
-    Gargor.stub(:rand).and_return(0.05,0.15)
+    allow(Gargor).to receive(:rand).and_return(0.05,0.15)
     expect(Gargor.mutation?(0.1)).to be true
     expect(Gargor.mutation?(0.1)).to be false
   end
