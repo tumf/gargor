@@ -9,7 +9,7 @@ gem "terminal-table"
 
 group :development do
   gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-byebug'
 end
 
 group :test, :development do
