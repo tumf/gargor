@@ -22,11 +22,11 @@ def load_fixture name
 end
 
 def to_load_fixture name
-  File.stub(:read).and_return(load_fixture(name))
+  allow(File).to receive(:read).and_return(load_fixture(name))
 end
 
 def to_load_contents text
-  File.stub(:read).and_return(text)
+  allow(File).to receive(:read).and_return(text)
 end
 
 

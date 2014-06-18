@@ -20,7 +20,7 @@ describe Gargor::Individual, "#deploy" do
   end
 
   it "build collect command-line" do
-    @i.stub(:shell) { |cmd|
+    allow(@i).to receive(:shell) { |cmd|
       expect(cmd).to match /knife solo cook (www-1|www-2|db-1).example/
       ["",0]
     }
@@ -28,7 +28,7 @@ describe Gargor::Individual, "#deploy" do
   end
 
   it "raise Gargor::DeployError if deploy failed" do
-    @i.stub(:shell) { |cmd|
+    allow(@i).to receive(:shell) { |cmd|
       ["",255]
     }
     expect{@i.deploy}.to raise_error Gargor::DeployError
@@ -42,7 +42,7 @@ describe Gargor::Individual, "attack" do
     Gargor.start
     Gargor.load_dsl("dummy")
     i = Gargor.mutate
-    i.stub(:shell) { |cmd|
+    allow(i).to receive(:shell) { |cmd|
       expect(cmd).to eq Gargor.opt("attack_cmd")
       out=<<EOF
 abc, 3300 req/s
