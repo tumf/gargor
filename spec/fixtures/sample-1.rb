@@ -12,17 +12,17 @@ elite 1
 mutation 0.01
 
 # target cook command : '%s' will replace by node name.
-target_cooking_cmd "knife solo cook %s"
+target_cooking_cmd 'knife solo cook %s'
 
 # target nodes
 #   performing target_cooking_command before the attack.
-target_nodes ["www-1.example","www-2.example","db-1.example"]
+target_nodes ['www-1.example', 'www-2.example', 'db-1.example']
 
 # attack command
-attack_cmd "ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null"
+attack_cmd 'ssh attacker.example ./bin/ghakai www-1.example.yml 2>/dev/null'
 
 # logging
-logger("gargor.log") do |logger|
+logger('gargor.log') do |logger|
   logger.level = Logger::INFO
 end
 
@@ -30,16 +30,14 @@ end
 # code: exit code of attack_cmd command (0 => succees)
 # out:  standard output of attack_cmd command
 # time: execute time of attack_cmd
-evaluate do |code,out,time|
+evaluate do |code, out, time|
   fitness = 0
   # get "FAILED" count from stadard output of stress-tool,
   # and set fitess to 0 when FAILED > 0.
-  if time > 0 && code == 0 && /^FAILED (\d+)/ =~ out && $1 == "0"
+  if time > 0 && code == 0 && /^FAILED (\d+)/ =~ out && Regexp.last_match(1) == '0'
     # get fitness from stadard output of stress-tool.
     # e.g.: request count:200, concurrenry:20, 45.060816 req/s
-    if /, ([\.\d]+) req\/s/ =~ out
-      fitness = $1.to_f
-    end
+    fitness = Regexp.last_match(1).to_f if /, ([\.\d]+) req\/s/ =~ out
     # To get fitness simply,to use execution time
     # fitness = 1/time
   end
@@ -54,32 +52,32 @@ end
 #            (Warning!) gargor will overwrite their json files.
 # json_path: to locate the value by JSONPath
 # mutaion:   to set value when mutaion
-param "max_clients" do
-  json_file "roles/www.json"
+param 'max_clients' do
+  json_file 'roles/www.json'
   json_path '$.httpd.max_clients'
-  mutation rand(500)+10
+  mutation rand(500) + 10
 end
 
-param "innodb_log_file_size" do
-  json_file "nodes/db-1.example.json"
+param 'innodb_log_file_size' do
+  json_file 'nodes/db-1.example.json'
   json_path '$.mysqld.innodb_log_file_size'
   mutation rand(200)
 end
 
-param "sort_buffer_size" do
-  json_file "nodes/db-1.example.json"
+param 'sort_buffer_size' do
+  json_file 'nodes/db-1.example.json'
   json_path '$.mysqld.sort_buffer_size'
   mutation rand(1000)
 end
 
-param "read_buffer_size" do
-  json_file "nodes/db-1.example.json"
+param 'read_buffer_size' do
+  json_file 'nodes/db-1.example.json'
   json_path '$.mysqld.read_buffer_size'
   mutation rand(1000)
 end
 
-param "query_cache_size" do
-  json_file "nodes/db-1.example.json"
+param 'query_cache_size' do
+  json_file 'nodes/db-1.example.json'
   json_path '$.mysqld.query_cache_size'
   mutation rand(100)
 end

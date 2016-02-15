@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-$TESTING=false
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+$TESTING = false
 require 'gargor/cli'
 Gargor::CLI.start(ARGV)
-

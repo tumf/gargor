@@ -2,11 +2,11 @@
 class Gargor
   class Parameter
     attr_accessor :file, :path, :value, :name
-    alias :json_file :file=
-    alias :json_path :path=
-    alias :mutation :value=
-    alias_method :eql, :==
-    def initialize name
+    alias json_file file=
+    alias json_path path=
+    alias mutation value=
+    alias eql ==
+    def initialize(name)
       @name = name
     end
 
@@ -15,11 +15,10 @@ class Gargor
     end
 
     def ==(other)
-      name == other.name and
-        file == other.file and
-        path == other.path and
+      name == other.name &&
+        file == other.file &&
+        path == other.path &&
         value == other.value
     end
-
   end
 end

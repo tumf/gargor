@@ -1,9 +1,9 @@
-require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
-task :default => :spec
+task default: :spec
 
-desc "Run all specs in spec directory"
+desc 'Run all specs in spec directory'
 RSpec::Core::RakeTask.new(:spec)
 
 require 'rake/version_task'
