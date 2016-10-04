@@ -19,6 +19,7 @@ group :test, :development do
   gem 'rspec'
   gem 'simplecov'
   gem 'coveralls', require: false
+  gem 'codeclimate-test-reporter', require: false
 end
 
 # Specify your gem's dependencies in gargor.gemspec
