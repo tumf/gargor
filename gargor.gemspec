@@ -20,4 +20,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.3'
   spec.add_development_dependency 'rake'
+
+  spec.add_runtime_dependency 'json'
+  spec.add_runtime_dependency 'jsonpath'
+  spec.add_runtime_dependency 'progressbar'
+  spec.add_runtime_dependency 'version'
+  spec.add_runtime_dependency 'thor'
+  spec.add_runtime_dependency 'terminal-table'
+
 end

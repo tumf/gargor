@@ -1,11 +1,5 @@
 source 'https://rubygems.org'
-
-gem 'json'
-gem 'jsonpath'
-gem 'progressbar'
-gem 'version'
-gem 'thor'
-gem 'terminal-table'
+gemspec
 
 group :development do
   gem 'pry'
@@ -22,5 +16,4 @@ group :test, :development do
   gem 'codeclimate-test-reporter', require: false
 end
 
-# Specify your gem's dependencies in gargor.gemspec
-gemspec
+
